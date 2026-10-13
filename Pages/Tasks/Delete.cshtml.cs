@@ -1,0 +1,3 @@
+using System.Security.Claims; using Microsoft.AspNetCore.Mvc; using Microsoft.AspNetCore.Mvc.RazorPages; using Microsoft.EntityFrameworkCore; using TasksWebApp.Data;
+namespace TasksWebApp.Pages.Tasks;
+public class DeleteModel(AppDbContext db):PageModel{public async Task<IActionResult> OnPostAsync(int id){var x=await db.TaskItems.FirstOrDefaultAsync(t=>t.Id==id);if(x==null)return RedirectToPage("Index");if(!User.IsInRole("Admin")&&x.CreatedById!=int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))return Forbid();db.TaskItems.Remove(x);await db.SaveChangesAsync();return RedirectToPage("Index");}}
